@@ -1,5 +1,4 @@
 import urlparse
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -26,6 +25,10 @@ class Page(object):
         WebDriverWait(self.driver, 5, 0.1).until(
             lambda d: d.find_element_by_xpath(element)
         )
+
+    def wait_for_click_able(self, element):
+        WebDriverWait(self.driver, 5, 0.1).until(
+            EC.element_to_be_clickable((By.XPATH, element)))
 
     def wait_for_disappear(self, element):
         WebDriverWait(self.driver, 5).until_not(
