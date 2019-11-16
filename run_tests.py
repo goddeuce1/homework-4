@@ -54,16 +54,10 @@ class TestClass(unittest.TestCase):
         self.assertEqual(is_saved_successfully, result)
         
     # # Сохраняются нестандартные настройки напоминаний для новых событий. URL:https://calendar.mail.ru/ Ошибка:http://jira.bmstu.cloud/browse/QA-277
-    # def test_create_event_5(self):
-    #     is_saved_successfully = True
-    #     result = set_create_event_5(self)
-    #     self.assertEqual(is_saved_successfully, result)
+    # Хм. Трудновато проверить т.к. надо найти созданное событие на всей сетке
 
     # # Может быть выслано напоминание о событии по почте не меньше чем за минуту до самого события. URL:https://calendar.mail.ru/ Ошибка:http://jira.bmstu.cloud/browse/QA-280
-    # def test_create_event_6(self):
-    #     is_saved_successfully = True
-    #     result = set_create_event_6(self)
-    #     self.assertEqual(is_saved_successfully, result)
+    # Странный кейс. Напоминание МОЖЕТ быть выслано в тот же момент, что и событие
 
 if __name__ == '__main__':
     unittest.main()
