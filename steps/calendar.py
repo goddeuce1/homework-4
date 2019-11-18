@@ -5,7 +5,7 @@ from datetime import timedelta
 def set_create_event_w_attendees(self):
     calendar = CalendarPage(self.driver).form
     calendar.create_event()
-    calendar.add_attendees("dimamail1337@mail.ru")
+    calendar.add_attendees("iergeoi@e.mail.ru")
     calendar.save_event()
     calendar.wait_for_disappear(calendar.EVENT_PAGE)
     try:
