@@ -1,6 +1,5 @@
 from pages.auth import *
 
-
 def login(self):
     auth_page = AuthPage(self.driver)
     auth_page.open()

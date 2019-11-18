@@ -1,6 +1,6 @@
 from default import *
+import datetime
 from selenium.webdriver.common.keys import Keys
-
 
 class CalendarPage(Page):
     PATH = ''
@@ -11,6 +11,51 @@ class CalendarPage(Page):
 
 
 class CalendarForm(Component, Page):
+
+    EVENT_PAGE = '//div[@class="event-page"]'
+    CREATE_EVENT__BUTTON = '//a[contains(@class, "button_create-event")]'
+    SAVE_EVENT__BUTTON = '//a[contains(@class, "event-new__button_submit")]'
+    CANCEL_EVENT__BUTTON = '//a[contains(@class, "event-new__reset")]'
+    ATTENDEES___INPUT = '//div[@class="attendees-selector__textbox"]//input[@name="input"]'
+    EVENT_NAME__INPUT = '//div[@class="event-new__summary event-new__row"]//input'
+    DATE_END__INPUT = '//input[@name="dateEnd"]'
+    DATE_FORMAT = "%d.%m.%Y"
+    LOCATION__INPUT = '//div[@class="event-new__row event-new__row_location"]//input'
+    DESCRIPTION__INPUT = '//div[@class="event-new__row event-new__row_description"]//textarea'
+
+    def save_event(self):
+        self.wait_for_clickable(self.SAVE_EVENT__BUTTON).click()
+
+    def create_event(self):
+        self.wait_for_clickable(self.CREATE_EVENT__BUTTON).click()
+
+    def cancel_event(self):
+        self.wait_for_clickable(self.CANCEL_EVENT__BUTTON).click()   
+
+    def set_name(self, name):
+        self.wait_for_clickable(self.EVENT_NAME__INPUT).send_keys(name)
+
+    def set_location(self, location):
+        self.wait_for_clickable(self.LOCATION__INPUT).send_keys(location)
+
+    def set_description(self, description):
+        self.wait_for_clickable(self.DESCRIPTION__INPUT).send_keys(description) 
+
+    def add_attendees(self, email):
+        elem = self.wait_for_element(self.ATTENDEES___INPUT)
+        elem.send_keys(email)
+        elem.send_keys(Keys.ENTER)
+
+    def get_date_end(self):
+        elem = self.wait_for_element(self.DATE_END__INPUT)
+        dateStr = elem.get_attribute("value")
+        return datetime.datetime.strptime(dateStr, self.DATE_FORMAT).date()
+
+    def set_date_end(self, date):
+        elem = self.wait_for_element(self.DATE_END__INPUT)
+        self.driver.execute_script("arguments[0].setAttribute('value','"+date.strftime(self.DATE_FORMAT)+"')", elem)
+        elem.click()
+
     SETTINGS = '//div[@data-role="popup"]'
     SETTINGS_BUTTON = '//a[@href="?action=settings"]'
     SETTINGS_SUBMIT = '//button[@data-action="submit"]'
@@ -34,12 +79,12 @@ class CalendarForm(Component, Page):
 
     def settings_click(self):
         self.wait_for_element(self.SETTINGS_BUTTON)
-        self.wait_for_click_able(self.SETTINGS_BUTTON)
+        self.wait_for_clickable(self.SETTINGS_BUTTON)
         self.driver.find_element_by_xpath(self.SETTINGS_BUTTON).click()
 
     def settings_submit(self):
         self.wait_for_element(self.SETTINGS_SUBMIT)
-        self.wait_for_click_able(self.SETTINGS_SUBMIT)
+        self.wait_for_clickable(self.SETTINGS_SUBMIT)
         self.driver.find_element_by_xpath(self.SETTINGS_SUBMIT).click()
 
     def change_workday_times(self):
@@ -49,14 +94,14 @@ class CalendarForm(Component, Page):
 
         self.wait_for_element(self.SETTINGS)
         settings = self.driver.find_element_by_xpath(self.SETTINGS)
-        self.wait_for_click_able(self.WORKDAY_START)
+        self.wait_for_clickable(self.WORKDAY_START)
         start = settings.find_element_by_xpath(self.WORKDAY_START)
 
         for i in range (0, time_format_len):
             start.send_keys(Keys.BACK_SPACE)
 
         start.send_keys(time_begin)
-        self.wait_for_click_able(self.WORKDAY_END)
+        self.wait_for_clickable(self.WORKDAY_END)
         end = settings.find_element_by_xpath(self.WORKDAY_END)
 
         for i in range (0, time_format_len):
@@ -67,11 +112,11 @@ class CalendarForm(Component, Page):
     def change_calendar(self):
         self.wait_for_element(self.SETTINGS)
         settings = self.driver.find_element_by_xpath(self.SETTINGS)
-        self.wait_for_click_able(self.SELECT_CALENDAR)
+        self.wait_for_clickable(self.SELECT_CALENDAR)
         select = settings.find_element_by_xpath(self.SELECT_CALENDAR)
         select.click()
 
-        self.wait_for_click_able(self.SELECT_CALENDAR_ELEMENT)
+        self.wait_for_clickable(self.SELECT_CALENDAR_ELEMENT)
         select.find_element_by_xpath(self.SELECT_CALENDAR_ELEMENT).click()
 
     def change_to_two_workdays(self):
@@ -81,7 +126,7 @@ class CalendarForm(Component, Page):
 
         i = 1
         for item in days:
-            self.wait_for_click_able(self.WORKDAY_CHECKBOX_ITEM % i)
+            self.wait_for_clickable(self.WORKDAY_CHECKBOX_ITEM % i)
             span = item.find_element_by_xpath(self.WORKDAY_CHECKBOX_ITEM % i)
             value = span.find_element_by_xpath(self.WORKDAY_CHECKBOX_ITEM_VALUE)
             if value.get_attribute('value') == 'true':
@@ -93,7 +138,7 @@ class CalendarForm(Component, Page):
         i = 1
         for item in days:
             if i <= max_workdays:
-                self.wait_for_click_able(self.WORKDAY_CHECKBOX_ITEM % i)
+                self.wait_for_clickable(self.WORKDAY_CHECKBOX_ITEM % i)
                 item.find_element_by_xpath(self.WORKDAY_CHECKBOX_ITEM % i).click()
                 i += 1
             else:
@@ -106,7 +151,7 @@ class CalendarForm(Component, Page):
 
         i = 1
         for item in days:
-            self.wait_for_click_able(self.WORKDAY_CHECKBOX_ITEM % i)
+            self.wait_for_clickable(self.WORKDAY_CHECKBOX_ITEM % i)
             span = item.find_element_by_xpath(self.WORKDAY_CHECKBOX_ITEM % i)
             value = span.find_element_by_xpath(self.WORKDAY_CHECKBOX_ITEM_VALUE)
             if value.get_attribute('value') == 'true':
@@ -115,7 +160,7 @@ class CalendarForm(Component, Page):
 
     def reminders_click(self):
         self.wait_for_element(self.SETTINGS_REMINDERS_BUTTON)
-        self.wait_for_click_able(self.SETTINGS_REMINDERS_BUTTON)
+        self.wait_for_clickable(self.SETTINGS_REMINDERS_BUTTON)
         self.driver.find_element_by_xpath(self.SETTINGS_REMINDERS_BUTTON).click()
 
     def change_to_one_reminder(self):
@@ -123,7 +168,7 @@ class CalendarForm(Component, Page):
         reminders = self.driver.find_elements_by_xpath(self.REMINDERS_ITEM)
 
         for item in reminders:
-            self.wait_for_click_able(self.REMINDERS_ITEM_CHECKBOX)
+            self.wait_for_clickable(self.REMINDERS_ITEM_CHECKBOX)
             span = item.find_element_by_xpath(self.REMINDERS_ITEM_CHECKBOX)
             if span.get_attribute('data-checked') == 'true' and span.get_attribute('name') != 'email':
                 span.click()
@@ -135,14 +180,14 @@ class CalendarForm(Component, Page):
         reminders = self.driver.find_elements_by_xpath(self.REMINDERS_ITEM)
 
         for item in reminders:
-            self.wait_for_click_able(self.REMINDERS_ITEM_CHECKBOX)
+            self.wait_for_clickable(self.REMINDERS_ITEM_CHECKBOX)
             span = item.find_element_by_xpath(self.REMINDERS_ITEM_CHECKBOX)
             if span.get_attribute('data-checked') == 'true':
                 span.click()
 
     def mute_sound(self):
         self.wait_for_element(self.REMINDERS_SOUND)
-        self.wait_for_click_able(self.REMINDERS_SOUND)
+        self.wait_for_clickable(self.REMINDERS_SOUND)
         sound = self.driver.find_element_by_xpath(self.REMINDERS_SOUND)
         if sound.get_attribute('data-checked') == 'false':
             sound.click()
@@ -152,7 +197,7 @@ class CalendarForm(Component, Page):
         reminders = self.driver.find_elements_by_xpath(self.REMINDERS_EMAIL_ITEM)
 
         for item in reminders:
-            self.wait_for_click_able(self.REMINDERS_EMAIL_ITEM_CHECKBOX)
+            self.wait_for_clickable(self.REMINDERS_EMAIL_ITEM_CHECKBOX)
             span = item.find_element_by_xpath(self.REMINDERS_EMAIL_ITEM_CHECKBOX)
             if span.get_attribute('data-checked') == state:
                 span.click()
